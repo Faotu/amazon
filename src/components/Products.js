@@ -1,20 +1,42 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { StarIcon } from "@heroicons/react/solid";
-import CurrencyFormat from "react-currency-format";
-import Currency from "react-currency-format";
+import { useDispatch } from "react-redux";
+import { addToBasket } from "../slices/basketSlice";
+// import CurrencyFormat from "react-currency-format";
+// import Currency from "react-currency-format";
 const MATH_RATING = 5;
 const MIN_RATING = 2;
 
 function Products({ id, title, price, description, category, image }) {
+  const dispatch = useDispatch();
+
   const [rating] = useState(
     Math.floor(Math.random() * (MATH_RATING - MIN_RATING + 1)) + MIN_RATING
   );
 
   const [hasPrime] = useState(Math.random() < 0.5);
+const addItemToBasket = () => {
+
+  const product = {
+    id,
+    title,
+    price,
+    description,
+    category,
+    image,
+    rating,
+    hasPrime,
+  }
+  // send the product to the basketSlice in the redux store
+  dispatch(addToBasket(product))
+}
+
   return (
     <div className="relative flex flex-col m-5 bg-white z-30 p-10 ">
-      <p className="absolute top-2 right-2 text-xs italic text-gray-400 ">{category}</p>
+      <p className="absolute top-2 right-2 text-xs italic text-gray-400 ">
+        {category}
+      </p>
       <Image src={image} height={200} width={200} objectFit="contain" />
       <h4 className="my-3">{title}</h4>
       <div className="flex">
@@ -26,19 +48,23 @@ function Products({ id, title, price, description, category, image }) {
       </div>
       <p className="text-xs my-2 line-clamp-2">{description}</p>
       <div className="mb-5">
-<CurrencyFormat quantity={price} currency='#' />    
-       <Currency quantity={price} Currency="#"/>
+        {/* <CurrencyFormat quantity={price} currency="#" />
+        <Currency quantity={price} Currency="#" /> */}
 
-     <p>#{price}</p>
+        <p>#{price}</p>
       </div>
-      {hasPrime &&(
+      {hasPrime && (
         <div className="flex items-center space-x-2 -mt-5 ">
-          <img className="w-12" src="https://links.papareact.com/fdw" alt="prime" />
+          <img
+            className="w-12"
+            src="https://links.papareact.com/fdw"
+            alt="prime"
+          />
           <p className="text-xs text-gray-500">Free Next-day Delivery</p>
         </div>
       )}
 
-      <button className="mt-auto button">Add to Cart</button>
+      <button onClick={addItemToBasket} className="mt-auto button">Add to Cart</button>
     </div>
   );
 }
